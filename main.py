@@ -20,6 +20,7 @@ class UserCreate(BaseModel):
 
 @app.get('/')
 def root():
+
     return 'Hello World'
 
 
