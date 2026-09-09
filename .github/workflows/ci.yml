@@ -63,3 +63,42 @@ jobs:
           context: .
           push: false
           tags: fastapi-app:ci
+
+  docker-compose-check:
+    runs-on: ubuntu-latest
+    needs: docker
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Create .env for compose
+        run: |
+          echo "POSTGRES_DB=fastapi_learning" >> .env
+          echo "POSTGRES_USER=fastapi_user" >> .env
+          echo "POSTGRES_PASSWORD=fastapi_pass" >> .env
+          echo "DATABASE_URL=postgresql://fastapi_user:fastapi_pass@db:5432/fastapi_learning" >> .env
+
+      - name: Start stack with docker compose
+        run: docker compose up -d --build
+
+      - name: Wait for app to respond
+        run: |
+          for i in {1..15}; do
+            if curl --fail http://localhost:8000/docs; then
+              echo "App is up!"
+              exit 0
+            fi
+            echo "Waiting for app..."
+            sleep 2
+          done
+          echo "App did not start in time"
+          exit 1
+
+      - name: Show logs on failure
+        if: failure()
+        run: docker compose logs
+
+      - name: Stop stack
+        if: always()
+        run: docker compose down
