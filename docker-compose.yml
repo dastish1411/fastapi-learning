@@ -3,9 +3,9 @@ services:
     image: postgres:16
     restart: always
     environment:
-      POSTGRES_DB: fastapi_learning
-      POSTGRES_USER: fastapi_user
-      POSTGRES_PASSWORD: fastapi_pass
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
@@ -17,7 +17,7 @@ services:
     depends_on:
       - db
     environment:
-      DATABASE_URL: postgresql://fastapi_user:fastapi_pass@db:5432/fastapi_learning
+      DATABASE_URL: ${DATABASE_URL}
     ports:
       - "8000:8000"
 
