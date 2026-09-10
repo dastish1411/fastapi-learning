@@ -23,7 +23,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            cd /path/to/project/on/server
+            cd /root/fastapi-learning
             git pull origin main
             docker compose down
             docker compose up --build -d
